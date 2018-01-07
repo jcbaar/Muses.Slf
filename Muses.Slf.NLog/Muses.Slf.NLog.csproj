@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <Authors>Jan van den Baard</Authors>
+    <Company>Jan van den Baard</Company>
+    <Description>Logging facade implementation for NLog</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="4.4.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Muses.Slf\Muses.Slf.csproj" />
+  </ItemGroup>
+
+</Project>
