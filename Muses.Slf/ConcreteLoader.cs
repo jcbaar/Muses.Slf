@@ -15,6 +15,10 @@ namespace Muses.Slf
     {
         private static object _lock = new object();
         private static List<ILoggerFactory> _factories = null;
+        private static List<ILoggerFactory> _nop = new List<ILoggerFactory>
+        {
+            new NopLoggerFactory()
+        };
 
         /// <summary>
         /// Loads and instantiates the <see cref="ILoggerFactory"/> implementing classes from the
@@ -40,15 +44,15 @@ namespace Muses.Slf
         /// code run without any other issues.</returns>
         public static List<ILoggerFactory> LoadFactories(string directory, string pattern)
         {
+            var factories = new List<ILoggerFactory>();
             lock (_lock)
             {
                 // We only load the list once.
                 if (_factories == null)
                 {
-                    _factories = new List<ILoggerFactory>();
-                    try
+                    var assemblies = Directory.GetFiles(directory, pattern);
+                    if (assemblies.Any())
                     {
-                        var assemblies = Directory.GetFiles(directory, pattern);
                         foreach (var assembly in assemblies)
                         {
                             var a = Assembly.LoadFile(assembly);
@@ -63,25 +67,15 @@ namespace Muses.Slf
                             {
                                 foreach (var type in types)
                                 {
-                                    _factories.Add((ILoggerFactory)Activator.CreateInstance(type, true));
+                                    factories.Add((ILoggerFactory)Activator.CreateInstance(type, true));
                                 }
                             }
                         }
-                    }
-                    finally
-                    {
-                        if (_factories.Count == 0)
-                        {
-                            // When no concrete types are found we need to add the
-                            // NopLoggerFactory so that we at least have a logging factory. This
-                            // NopLoggerFactory will serve up a NopLogger instance which simply
-                            // does nothing...
-                            _factories.Add(new NopLoggerFactory());
-                        }
+                        _factories = factories;
                     }
                 }
             }
-            return _factories;
+            return _factories ?? _nop;
         }
     }
 }

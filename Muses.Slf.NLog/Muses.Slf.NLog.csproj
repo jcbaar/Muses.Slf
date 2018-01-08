@@ -8,6 +8,16 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.4.12" />
   </ItemGroup>
@@ -15,5 +25,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Muses.Slf\Muses.Slf.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y /S &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir)TestApp\bin\$(ConfigurationName)&quot;&#xD;&#xA;xcopy /Y /S &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)TestApp\bin\$(ConfigurationName)&quot;&#xD;&#xA;xcopy /Y /S &quot;$(TargetDir)NLog.dll&quot; &quot;$(SolutionDir)TestApp\bin\$(ConfigurationName)&quot;&#xD;&#xA;&#xD;&#xA;xcopy /Y /S &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir)Muses.Slf.Tests\bin\$(ConfigurationName)&quot;&#xD;&#xA;xcopy /Y /S &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Muses.Slf.Tests\bin\$(ConfigurationName)&quot;&#xD;&#xA;xcopy /Y /S &quot;$(TargetDir)NLog.dll&quot; &quot;$(SolutionDir)Muses.Slf.Tests\bin\$(ConfigurationName)&quot;" />
+  </Target>
 
 </Project>

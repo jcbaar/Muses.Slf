@@ -3,6 +3,7 @@ using NLog;
 using NLog.Config;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Muses.Slf.NLog
@@ -59,14 +60,14 @@ namespace Muses.Slf.NLog
         public string Name => "NLog";
         #endregion
 
-        #region Public methods
+        #region Internal methods
         /// <summary>
         /// Converts a <see cref="Level"/> to a NLog <see cref="NLog.LogLevel"/>.
         /// </summary>
         /// <param name="level">The <see cref="Level"/> to convert.</param>
         /// <returns>The NLog <see cref="NLog.LogLevel"/>. If an unknown <see cref="Level"/> is used
         /// <see cref="NLog.LogLevel.Off"/> is returned.</returns>
-        public static LogLevel ToNLogLevel(Level level)
+        internal static LogLevel ToNLogLevel(Level level)
         {
             if(_levelTable.TryGetValue(level, out LogLevel result))
             {
@@ -81,7 +82,7 @@ namespace Muses.Slf.NLog
         /// <param name="level">The <see cref="NLog.LogLevel"/> to convert.</param>
         /// <returns>The <see cref="Level"/>. If an unknown <see cref="NLog.LogLevel"/> is used
         /// <see cref="Level.Other"/> is returned.</returns>
-        public static Level ToLevel(LogLevel level)
+        internal static Level ToLevel(LogLevel level)
         {
             if(_reverseLevelTable.TryGetValue(level, out Level result))
             {
@@ -89,7 +90,9 @@ namespace Muses.Slf.NLog
             }
             return Level.Other;
         }
+        #endregion
 
+        #region Public methods
         /// <summary>
         /// Get's the instance of the named <see cref="ILogger"/> instance.
         /// </summary>
@@ -103,7 +106,7 @@ namespace Muses.Slf.NLog
         /// </summary>
         /// <param name="type">The <see cref="Type"/> to use as a name of the <see cref="ILogger"/> instance.</param>
         /// <returns>The instance of the <see cref="ILogger"/></returns>
-        public Interfaces.ILogger GetLogger(Type type) => GetOrAddLogger(type.FullName, (n) => new NLogLogger(n));
+        public Interfaces.ILogger GetLogger(Type type) => GetLogger(type.FullName);
 
         /// <summary>
         /// Registers a listener action for logging events. Whenever a logging event
@@ -112,7 +115,8 @@ namespace Muses.Slf.NLog
         /// </summary>
         /// <param name="listener">The <see cref="Action{LogEvent}"/> which must be called
         /// when a logging event occurred.</param>
-        public void RegisterEventListener(Action<LogEvent> listener) => RegisterListener(listener);
+        /// <returns>true if the listener was added, false if the listener was already added.</returns>
+        public bool RegisterEventListener(Action<LogEvent> listener) => RegisterListener(listener);
 
         /// <summary>
         /// Unregisters a listener action for logging events previously registered with
@@ -120,19 +124,22 @@ namespace Muses.Slf.NLog
         /// </summary>
         /// <param name="listener">The <see cref="Action{LogEvent}"/> which must no longer be called
         /// when a logging event occurred.</param>
-        public void UnregisterEventListener(Action<LogEvent> listener) => UnregisterListener(listener);
+        /// <returns>true if the listener was actually removed, false if the listener was not found.</returns>
+        public bool UnregisterEventListener(Action<LogEvent> listener) => UnregisterListener(listener);
 
         /// <summary>
         /// Protected method that derived classes should use to call the registered
         /// <see cref="Action{LogEvent}"/> callback action(s).
         /// </summary>
         /// <param name="logEvent">The <see cref="LogEvent"/> containing the logging information.</param>
-        public void RaiseEvent(LogEvent logEvent) => Raise(logEvent);
+        /// <returns>true if at least one callback was called, false if no callback was called.</returns>
+        public bool RaiseEvent(LogEvent logEvent) => Raise(logEvent);
 
         /// <summary>
         /// Converts the instance to a string.
         /// </summary>
         /// <returns>The <see cref="Name"/> of the instance.</returns>
+        [ExcludeFromCodeCoverage]
         public override string ToString() => Name;
         #endregion
     }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace Muses.Slf
@@ -15,7 +16,7 @@ namespace Muses.Slf
     {
         private ReaderWriterLockSlim _locker = new ReaderWriterLockSlim();
         private List<Action<LogEvent>> _listeners = new List<Action<LogEvent>>();
-        private ConcurrentDictionary<String, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>(); 
+        private ConcurrentDictionary<String, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>();
 
         /// <summary>
         /// Get's the named logger instance or creates a new one.
@@ -23,10 +24,8 @@ namespace Muses.Slf
         /// <param name="name">The name of the <see cref="ILogger"/> instance.</param>
         /// <param name="factory">The factory function to create a new <see cref="ILogger"/> instance.</param>
         /// <returns>The named <see cref="ILogger"/> instance.</returns>
-        protected ILogger GetOrAddLogger(string name, Func<string, ILogger> factory)
-        {
-            return _loggers.GetOrAdd(name, factory);
-        }
+        [ExcludeFromCodeCoverage]
+        protected ILogger GetOrAddLogger(string name, Func<string, ILogger> factory) => _loggers.GetOrAdd(name, factory);
 
         /// <summary>
         /// Registers a listener action for logging events. Whenever a logging event
@@ -35,7 +34,8 @@ namespace Muses.Slf
         /// </summary>
         /// <param name="listener">The <see cref="Action{LogEvent}"/> which must be called
         /// when a logging event occurred.</param>
-        protected void RegisterListener(Action<LogEvent> listener)
+        /// <returns>true if the listener was added, false if the listener was already added.</returns>
+        protected bool RegisterListener(Action<LogEvent> listener)
         {
             try
             {
@@ -43,7 +43,9 @@ namespace Muses.Slf
                 if (!_listeners.Contains(listener))
                 {
                     _listeners.Add(listener);
+                    return true;
                 }
+                return false;
             }
             finally
             {
@@ -57,7 +59,8 @@ namespace Muses.Slf
         /// </summary>
         /// <param name="listener">The <see cref="Action{LogEvent}"/> which must no longer be called
         /// when a logging event occurred.</param>
-        protected void UnregisterListener(Action<LogEvent> listener)
+        /// <returns>true if the listener was actually removed, false if the listener was not found.</returns>
+        protected bool UnregisterListener(Action<LogEvent> listener)
         {
             try
             {
@@ -65,7 +68,9 @@ namespace Muses.Slf
                 if (_listeners.Contains(listener))
                 {
                     _listeners.Remove(listener);
+                    return true;
                 }
+                return false;
             }
             finally
             {
@@ -78,14 +83,23 @@ namespace Muses.Slf
         /// <see cref="Action{LogEvent}"/> callback action(s).
         /// </summary>
         /// <param name="logEvent">The <see cref="LogEvent"/> containing the logging information.</param>
-        protected void Raise(LogEvent logEvent)
+        /// <returns>true if at least one callback was called, false if no callback was called.</returns>
+        protected bool Raise(LogEvent logEvent)
         {
             try
             {
                 _locker.EnterReadLock();
-                foreach (var action in _listeners)
+                if (_listeners.Count == 0)
                 {
-                    action(logEvent);
+                    return false;
+                }
+                else
+                {
+                    foreach (var action in _listeners)
+                    {
+                        action(logEvent);
+                    }
+                    return true;
                 }
             }
             finally

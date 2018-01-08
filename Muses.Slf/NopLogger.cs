@@ -1,5 +1,9 @@
 ﻿using Muses.Slf.Interfaces;
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Muses.Slf.Tests")]
 
 namespace Muses.Slf
 {
@@ -7,6 +11,7 @@ namespace Muses.Slf
     /// A "No-operation" logger. This is a placeholder logger used when no concrete
     /// implementation of the logging facade was found. It simply does nothing.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     class NopLogger : ILogger
     {
         public void Log(Level level, Exception exception, string message, params object[] args) { }

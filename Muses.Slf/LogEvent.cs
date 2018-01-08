@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Muses.Slf
 {
     /// <summary>
     /// Simple class holding the relevant log information.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class LogEvent
     {
         /// <summary>

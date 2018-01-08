@@ -1,6 +1,7 @@
 ﻿using Muses.Slf.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Muses.Slf.Log4Net
@@ -56,14 +57,14 @@ namespace Muses.Slf.Log4Net
         public string Name => "log4net";
         #endregion
 
-        #region Public methods
+        #region Internal methods
         /// <summary>
         /// Converts a <see cref="Level"/> to a log4net <see cref="log4net.Core.Level"/>.
         /// </summary>
         /// <param name="level">The <see cref="Level"/> to convert.</param>
         /// <returns>The log4net <see cref="log4net.Core.Level"/>. If an unknown <see cref="Level"/> is used
         /// <see cref="log4net.Core.Level.Off"/> is returned.</returns>
-        public static log4net.Core.Level ToLog4NetLevel(Level level)
+        internal static log4net.Core.Level ToLog4NetLevel(Level level)
         {
             if(_levelTable.TryGetValue(level, out log4net.Core.Level result))
             {
@@ -78,7 +79,7 @@ namespace Muses.Slf.Log4Net
         /// <param name="level">The <see cref="log4net.Core.Level"/> to convert.</param>
         /// <returns>The <see cref="Level"/>. If an unknown <see cref="log4net.Core.Level"/> is used
         /// <see cref="Level.Other"/> is returned.</returns>
-        public static Level ToLevel(log4net.Core.Level level)
+        internal static Level ToLevel(log4net.Core.Level level)
         {
             if(_reverseLevelTable.TryGetValue(level, out Level result))
             {
@@ -86,7 +87,9 @@ namespace Muses.Slf.Log4Net
             }
             return Level.Other;
         }
+        #endregion
 
+        #region Public methods
         /// <summary>
         /// Get's the instance of the named <see cref="ILogger"/> instance.
         /// </summary>
@@ -100,7 +103,7 @@ namespace Muses.Slf.Log4Net
         /// </summary>
         /// <param name="type">The <see cref="Type"/> to use as a name of the <see cref="ILogger"/> instance.</param>
         /// <returns>The instance of the <see cref="ILogger"/></returns>
-        public ILogger GetLogger(Type type) => GetOrAddLogger(type.FullName, (n) => new Log4NetLogger(n));
+        public ILogger GetLogger(Type type) => GetLogger(type.FullName);
 
         /// <summary>
         /// Registers a listener action for logging events. Whenever a logging event
@@ -109,7 +112,8 @@ namespace Muses.Slf.Log4Net
         /// </summary>
         /// <param name="listener">The <see cref="Action{LogEvent}"/> which must be called
         /// when a logging event occurred.</param>
-        public void RegisterEventListener(Action<LogEvent> listener) => RegisterListener(listener);
+        /// <returns>true if the listener was added, false if the listener was already added.</returns>
+        public bool RegisterEventListener(Action<LogEvent> listener) => RegisterListener(listener);
 
         /// <summary>
         /// Unregisters a listener action for logging events previously registered with
@@ -117,19 +121,22 @@ namespace Muses.Slf.Log4Net
         /// </summary>
         /// <param name="listener">The <see cref="Action{LogEvent}"/> which must no longer be called
         /// when a logging event occurred.</param>
-        public void UnregisterEventListener(Action<LogEvent> listener) => UnregisterListener(listener);
+        /// <returns>true if the listener was actually removed, false if the listener was not found.</returns>
+        public bool UnregisterEventListener(Action<LogEvent> listener) => UnregisterListener(listener);
 
         /// <summary>
         /// Protected method that derived classes should use to call the registered
         /// <see cref="Action{LogEvent}"/> callback action(s).
         /// </summary>
         /// <param name="logEvent">The <see cref="LogEvent"/> containing the logging information.</param>
-        public void RaiseEvent(LogEvent logEvent) => Raise(logEvent);
+        /// <returns>true if at least one callback was called, false if no callback was called.</returns>
+        public bool RaiseEvent(LogEvent logEvent) => Raise(logEvent);
 
         /// <summary>
         /// Converts the instance to a string.
         /// </summary>
         /// <returns>The <see cref="Name"/> of the instance.</returns>
+        [ExcludeFromCodeCoverage]
         public override string ToString() => Name;
         #endregion
     }

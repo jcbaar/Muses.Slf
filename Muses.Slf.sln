@@ -5,11 +5,13 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Muses.Slf", "Muses.Slf\Muses.Slf.csproj", "{5CACDF7B-4ECB-46D9-9838-BD822D7A7BAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muses.Slf.NLog", "Muses.Slf.NLog\Muses.Slf.NLog.csproj", "{469AB315-EAF3-42AE-829A-C301DA53E084}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Muses.Slf.NLog", "Muses.Slf.NLog\Muses.Slf.NLog.csproj", "{469AB315-EAF3-42AE-829A-C301DA53E084}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muses.Slf.Log4Net", "Muses.Slf.Log4Net\Muses.Slf.Log4Net.csproj", "{C74DD52B-9668-4F19-8EA0-02865478C653}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Muses.Slf.Log4Net", "Muses.Slf.Log4Net\Muses.Slf.Log4Net.csproj", "{C74DD52B-9668-4F19-8EA0-02865478C653}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{35083E3C-7EC1-40E5-8387-3E5C066E0049}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muses.Slf.Tests", "Muses.Slf.Tests\Muses.Slf.Tests.csproj", "{38F1E621-22D4-49BA-82D0-672A4EBD85E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{35083E3C-7EC1-40E5-8387-3E5C066E0049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35083E3C-7EC1-40E5-8387-3E5C066E0049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35083E3C-7EC1-40E5-8387-3E5C066E0049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38F1E621-22D4-49BA-82D0-672A4EBD85E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38F1E621-22D4-49BA-82D0-672A4EBD85E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38F1E621-22D4-49BA-82D0-672A4EBD85E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38F1E621-22D4-49BA-82D0-672A4EBD85E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

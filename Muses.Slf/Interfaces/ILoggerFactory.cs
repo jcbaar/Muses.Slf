@@ -13,10 +13,10 @@ namespace Muses.Slf.Interfaces
 
         ILogger GetLogger(Type type);
 
-        void RegisterEventListener(Action<LogEvent> listener);
+        bool RegisterEventListener(Action<LogEvent> listener);
 
-        void UnregisterEventListener(Action<LogEvent> listener);
+        bool UnregisterEventListener(Action<LogEvent> listener);
 
-        void RaiseEvent(LogEvent logEvent);
+        bool RaiseEvent(LogEvent logEvent);
     }
 }
