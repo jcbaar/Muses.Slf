@@ -49,6 +49,7 @@ namespace TestApp
             if(_factory != null)
             {
                 _factory.UnregisterEventListener(Listen);
+                _factory = null;
             }
 
             var factory = factories.SelectedItem as ILoggerFactory;

@@ -16,9 +16,9 @@ namespace Muses.Slf.Interfaces
         void Fatal(string message, params object[] args);
         void TraceException(Exception exception, string message, params object[] args);
         void DebugException(Exception exception, string message, params object[] args);
-        void ErrorException(Exception exception, string message, params object[] args);
         void InfoException(Exception exception, string message, params object[] args);
         void WarnException(Exception exception, string message, params object[] args);
+        void ErrorException(Exception exception, string message, params object[] args);
         void FatalException(Exception exception, string message, params object[] args);
     }
 }

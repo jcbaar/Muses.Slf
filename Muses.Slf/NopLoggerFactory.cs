@@ -24,7 +24,7 @@ namespace Muses.Slf
 
         public void UnregisterEventListener(Action<LogEvent> listener) { }
 
-        internal void RaiseEvent(LogEvent logEvent) { }
+        public void RaiseEvent(LogEvent logEvent) { }
 
         public override string ToString() => Name;
     }

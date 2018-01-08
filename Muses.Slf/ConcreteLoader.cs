@@ -18,7 +18,8 @@ namespace Muses.Slf
 
         /// <summary>
         /// Loads and instantiates the <see cref="ILoggerFactory"/> implementing classes from the
-        /// DLL assemblies found in the application startup folder.
+        /// DLL assemblies found in the application startup folder. The default naming pattern looked for
+        /// in the assemblies is 'Muses.Slf.*.dll'
         /// </summary>
         /// <returns>A <see cref="List{ILoggerFactory}"/> containing the concrete, <see cref="ILoggerFactory"/> implementing
         /// objects. When no classes implementing the <see cref="ILoggerFactory"/> class where found a list with a single
@@ -26,7 +27,7 @@ namespace Muses.Slf
         /// code run without any other issues.</returns>
         public static List<ILoggerFactory> LoadFactories()
         {
-            return LoadFactories(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll");
+            return LoadFactories(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Muses.Slf.*.dll");
         }
 
         /// <summary>

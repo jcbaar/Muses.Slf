@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Muses.Slf.Interfaces;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -13,6 +15,18 @@ namespace Muses.Slf
     {
         private ReaderWriterLockSlim _locker = new ReaderWriterLockSlim();
         private List<Action<LogEvent>> _listeners = new List<Action<LogEvent>>();
+        private ConcurrentDictionary<String, ILogger> _loggers = new ConcurrentDictionary<string, ILogger>(); 
+
+        /// <summary>
+        /// Get's the named logger instance or creates a new one.
+        /// </summary>
+        /// <param name="name">The name of the <see cref="ILogger"/> instance.</param>
+        /// <param name="factory">The factory function to create a new <see cref="ILogger"/> instance.</param>
+        /// <returns>The named <see cref="ILogger"/> instance.</returns>
+        protected ILogger GetOrAddLogger(string name, Func<string, ILogger> factory)
+        {
+            return _loggers.GetOrAdd(name, factory);
+        }
 
         /// <summary>
         /// Registers a listener action for logging events. Whenever a logging event

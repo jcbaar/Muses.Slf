@@ -16,5 +16,7 @@ namespace Muses.Slf.Interfaces
         void RegisterEventListener(Action<LogEvent> listener);
 
         void UnregisterEventListener(Action<LogEvent> listener);
+
+        void RaiseEvent(LogEvent logEvent);
     }
 }
